@@ -37,6 +37,12 @@ if (typeof post !== 'object' || post === null || typeof post.url !== 'string' ||
   console.error(`${POST_FILE} must be a JSON object with a non-empty "url" string.`);
   process.exit(1);
 }
+// The placeholder is not a post: refuse it here so a submission can never go
+// out with the template address still in place.
+if (post.url.includes('<id>') || post.url.includes('<handle>')) {
+  console.error(`${POST_FILE} still holds the placeholder address — replace <id> with the published post's id first.`);
+  process.exit(1);
+}
 
 mkdirSync(OUTPUT_DIR, { recursive: true });
 try {
